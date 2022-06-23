@@ -9,9 +9,6 @@ from telegram.ext.messagehandler import MessageHandler
 from telegram.ext.filters import Filters
 
 
-updater = Updater(os.getenv("TELEGRAM_APP_API_TOKEN"), use_context=True)
-
-
 def start(update: Update, context: CallbackContext):
 	update.message.reply_text("Hello " + update.message.chat.first_name + ", Welcome to E-Commerce Tracker Bot.\n" + 
 							  "This bot tracks the availablity of a product at different e-commerce websites.\n" + 
@@ -52,10 +49,12 @@ def sharedUrl(update: Update, context: CallbackContext):
 	sendMsg(update, message)
 
 
+print("START!!!")
+updater = Updater(os.getenv("TELEGRAM_APP_API_TOKEN"), use_context=True)
 updater.dispatcher.add_handler(CommandHandler('start', start))
 updater.dispatcher.add_handler(CommandHandler('help', help))
 updater.dispatcher.add_handler(MessageHandler(Filters.entity('url'), sharedUrl, run_async=True))
 updater.dispatcher.add_handler(MessageHandler(Filters.text, unknown))
 updater.dispatcher.add_handler(MessageHandler(Filters.command, unknown))
-
 updater.start_polling()
+print("END!!!")

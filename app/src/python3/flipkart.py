@@ -40,4 +40,4 @@ def getFlipkartNotInStockMsg(url):
 	
 	return name + """\n
 	Price = Rs""" + str(currentPrice) + " <s>Rs" + str(originalPrice) + """</s>
-	In stock = """ + "⚠️ <b>NOT IN STOCK</b> ⚠️"
+	""" + "⚠️ <b>NOT IN STOCK</b> ⚠️"
