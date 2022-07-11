@@ -1,3 +1,4 @@
+import utils
 import requests
 
 FLIPKART_URL = "flipkart.com/"
@@ -5,13 +6,15 @@ CASHKARO_URL = "https://cashkaro.com/stores/flipkart?r=18172340&fname=Ashul%20Gu
 FLIPKART_API_URL = "https://flipkart.dvishal485.workers.dev/product/min/"
 
 
-def goToFlipkart(url):
+def goToFlipkart(update, url):
 	i = url.index(FLIPKART_URL) + len(FLIPKART_URL)
 	response = requests.get(FLIPKART_API_URL + url[i:]).json()
+	name = response["name"]
 	inStock = True if response["in_stock"] else False
 	if not inStock:
+		utils.printLog(update.message.chat.first_name + "'s " + name + " is not in Stock!!! ❌")
 		return False, ""
-	name = response["name"]
+	utils.printLog(update.message.chat.first_name + "'s " + name + " is in Stock!!! ✅")
 	currentPrice = response["current_price"]
 	originalPrice = response["original_price"]
 	discounted = "✅" if response["discounted"] else "❌"
