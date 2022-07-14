@@ -66,7 +66,7 @@ def sharedUrl(update: Update, context: CallbackContext):
 def startTelegramBot():
 	result = ""
 	try:
-		utils.printLog("Initiating the telegram bot sequence!!! ⚠")
+		result += utils.printLog("Initiating the telegram bot sequence!!! ⚠")
 		updater = Updater(os.getenv("TELEGRAM_APP_API_TOKEN"), use_context=True)
 		updater.stop()
 		updater.dispatcher.add_handler(CommandHandler('start', start))
@@ -75,10 +75,8 @@ def startTelegramBot():
 		updater.dispatcher.add_handler(MessageHandler(Filters.text, unknown))
 		updater.dispatcher.add_handler(MessageHandler(Filters.command, unknown))
 		updater.start_polling()
-		result = "The telegram bot has successfully RESTARTED!!! ✅✅✅"
-		utils.printLog(result)
+		result += utils.printLog("The telegram bot has successfully RESTARTED!!! ✅✅✅")
 	except Exception as e:
-		result = str(e) + " ❌❌❌"
-		utils.printLog(result)
+		result += utils.printLog(str(e) + " ❌❌❌")
 	finally:
 		return result

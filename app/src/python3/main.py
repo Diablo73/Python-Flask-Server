@@ -9,37 +9,40 @@ log = logging.getLogger("werkzeug")
 log.setLevel(logging.ERROR)
 app = flask.Flask("Flask4Telegram")
 
+@app.before_request
+def before_request_callback():
+	pass
+
+@app.after_request
+def after_request_callback(response):
+	response.data = response.data.decode('utf-8').replace("\n", "<br>").replace("\t", "&emsp;").encode('utf-8')
+	return response
+
 @app.route("/")
 def start():
-	result = "Flask server is live and RUNNING!!! ✅"
-	utils.printLog(result)
-	return result
+	return utils.printLog("Flask server is live and RUNNING!!! ✅")
 
 @app.route("/refresh/<password>")
 def refresh(password):
 	if password == os.getenv("MASTER_PASSWORD"):
-		utils.printLog("The password is CORRECT!!! ✅")
-		return telegramBot.startTelegramBot()
+		result = utils.printLog("The password is CORRECT!!! ✅")
+		return result + telegramBot.startTelegramBot()
 	else:
-		result = "The password is WRONG!!! ❌"
-		utils.printLog(result)
-		return result
+		return utils.printLog("The password is WRONG!!! ❌")
 
 @app.route("/shutdown/<password>")
 def shutdown(password):
 	if password == os.getenv("MASTER_PASSWORD"):
-		utils.printLog("The password is CORRECT!!! ✅")
+		result = utils.printLog("The password is CORRECT!!! ✅")
 		shutdown_func = flask.request.environ.get("werkzeug.server.shutdown")
-		result = "Not running werkzeug!!! ❌"
+		werkzeug = "Not running werkzeug!!! ❌"
 		if shutdown_func is not None:
-			result = "Flask werkzeug server is SHUTTING DOWN!!! ✅"
+			werkzeug = "Flask werkzeug server is SHUTTING DOWN!!! ✅"
 			shutdown_func()
-		utils.printLog(result)
+		result += utils.printLog(werkzeug)
 		return result
 	else:
-		result = "The password is WRONG!!! ❌"
-		utils.printLog(result)
-		return result
+		return utils.printLog("The password is WRONG!!! ❌")
 
 
 def main():
