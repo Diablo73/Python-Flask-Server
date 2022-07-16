@@ -1,5 +1,6 @@
 import os, time
 import utils, flipkart
+import requests
 import telegram
 from telegram.ext.updater import Updater
 from telegram.update import Update
@@ -8,6 +9,9 @@ from telegram.ext.commandhandler import CommandHandler
 from telegram.ext.messagehandler import MessageHandler
 from telegram.ext.filters import Filters
 
+
+TELEGRAM_API_URL = "https://api.telegram.org/bot"
+GET_UPDATES_ENDPOINT = "/getUpdates"
 
 def start(update: Update, context: CallbackContext):
 	utils.printLog(update)
@@ -80,3 +84,7 @@ def startTelegramBot():
 		result += utils.printLog(str(e) + " ❌❌❌")
 	finally:
 		return result
+
+def isTelegramBotUpdateQueueEmpty():
+	response = requests.get(TELEGRAM_API_URL + os.getenv("TELEGRAM_APP_API_TOKEN") + GET_UPDATES_ENDPOINT).json()
+	return response["ok"] and len(response["result"]) == 0
