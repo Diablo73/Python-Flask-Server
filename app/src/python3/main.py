@@ -1,5 +1,6 @@
 import os
 import flask
+import json
 # import waitress
 import logging
 import telegramBot, utils
@@ -21,6 +22,20 @@ def after_request_callback(response):
 @app.route("/")
 def start():
 	return utils.printLog("Flask server is live and RUNNING!!! ✅")
+
+@app.route("/json/minify/<jsonArg>")
+def jsonMinify(jsonArg):
+	try:
+		return "<pre>" + json.dumps(json.loads(jsonArg), separators=(',', ':')) + "</pre>"
+	except Exception as e:
+		return jsonArg + "\n\n❌" + str(e)
+
+@app.route("/json/beautify/<jsonArg>")
+def jsonBeautify(jsonArg):
+	try:
+		return "<pre>" + json.dumps(json.loads(jsonArg), indent=4).replace("    ", "&#9;") + "</pre>"
+	except Exception as e:
+		return jsonArg + "\n\n❌" + str(e)
 
 @app.route("/refresh/<password>")
 def refresh(password):
