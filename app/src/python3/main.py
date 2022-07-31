@@ -1,14 +1,17 @@
-import os
 import flask
-import json
-# import waitress
 import logging
-import telegramBot, utils
+import utils
+from controllers import jsonControllers, telegramControllers
 
 
 log = logging.getLogger("werkzeug")
 log.setLevel(logging.ERROR)
 app = flask.Flask("Flask4Telegram")
+
+app.add_url_rule("/json/minify/<jsonArg>", view_func=jsonControllers.jsonMinify)
+app.add_url_rule("/json/beautify/<jsonArg>", view_func=jsonControllers.jsonBeautify)
+app.add_url_rule("/telegramBot/<password>/refresh", view_func=telegramControllers.refresh)
+app.add_url_rule("/telegramBot/<password>/shutdown", view_func=telegramControllers.shutdown)
 
 @app.before_request
 def before_request_callback():
@@ -22,43 +25,6 @@ def after_request_callback(response):
 @app.route("/")
 def start():
 	return utils.printLog("Flask server is live and RUNNING!!! ✅")
-
-@app.route("/json/minify/<jsonArg>")
-def jsonMinify(jsonArg):
-	try:
-		return "<pre>" + json.dumps(json.loads(jsonArg), separators=(',', ':')) + "</pre>"
-	except Exception as e:
-		return jsonArg + "\n\n❌" + str(e)
-
-@app.route("/json/beautify/<jsonArg>")
-def jsonBeautify(jsonArg):
-	try:
-		return "<pre>" + json.dumps(json.loads(jsonArg), indent=4).replace("    ", "&#9;") + "</pre>"
-	except Exception as e:
-		return jsonArg + "\n\n❌" + str(e)
-
-@app.route("/refresh/<password>")
-def refresh(password):
-	if password == os.getenv("MASTER_PASSWORD"):
-		result = utils.printLog("The password is CORRECT!!! ✅")
-		return result + telegramBot.startTelegramBot()
-	else:
-		return utils.printLog("The password is WRONG!!! ❌")
-
-@app.route("/shutdown/<password>")
-def shutdown(password):
-	if password == os.getenv("MASTER_PASSWORD"):
-		result = utils.printLog("The password is CORRECT!!! ✅")
-		shutdown_func = flask.request.environ.get("werkzeug.server.shutdown")
-		werkzeug = "Not running werkzeug!!! ❌"
-		if shutdown_func is not None:
-			werkzeug = "Flask werkzeug server is SHUTTING DOWN!!! ✅"
-			shutdown_func()
-		result += utils.printLog(werkzeug)
-		return result
-	else:
-		return utils.printLog("The password is WRONG!!! ❌")
-
 
 def main():
 	try:
