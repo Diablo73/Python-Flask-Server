@@ -1,7 +1,7 @@
 import flask
 import logging
 import utils
-from controllers import jsonControllers, telegramControllers, pyOtpControllers
+from controllers import jsonControllers, telegramControllers, pyOtpControllers, gasControllers
 
 
 log = logging.getLogger("werkzeug")
@@ -14,6 +14,7 @@ app.add_url_rule("/telegramBot/<password>/refresh", view_func=telegramController
 app.add_url_rule("/telegramBot/<password>/shutdown", view_func=telegramControllers.shutdown)
 app.add_url_rule("/2fa/generate/<secret>", view_func=pyOtpControllers.generate)
 app.add_url_rule("/2fa/validate/<secret>/<otp>", view_func=pyOtpControllers.validate)
+app.add_url_rule("/links/<password>/<method>/<otp>", view_func=gasControllers.links)
 
 
 @app.before_request
