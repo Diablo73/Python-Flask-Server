@@ -1,7 +1,7 @@
 import flask
 import logging
 import utils
-from controllers import jsonControllers, telegramControllers
+from controllers import jsonControllers, telegramControllers, pyOtpControllers
 
 
 log = logging.getLogger("werkzeug")
@@ -12,6 +12,9 @@ app.add_url_rule("/json/minify/<jsonArg>", view_func=jsonControllers.jsonMinify)
 app.add_url_rule("/json/beautify/<jsonArg>", view_func=jsonControllers.jsonBeautify)
 app.add_url_rule("/telegramBot/<password>/refresh", view_func=telegramControllers.refresh)
 app.add_url_rule("/telegramBot/<password>/shutdown", view_func=telegramControllers.shutdown)
+app.add_url_rule("/2fa/generate/<secret>", view_func=pyOtpControllers.generate)
+app.add_url_rule("/2fa/validate/<secret>/<otp>", view_func=pyOtpControllers.validate)
+
 
 @app.before_request
 def before_request_callback():
