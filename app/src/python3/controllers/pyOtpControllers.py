@@ -1,3 +1,4 @@
+import time
 import pyotp
 from io import StringIO
 from qrcode import QRCode
@@ -17,7 +18,7 @@ def generate(secret):
 # @app.route("/2fa/validate/<secret>/<otp>", methods=['GET'])
 def validate(secret, otp):
 	try:
-		if otp ==  pyotp.TOTP(secret).now():
+		if otp == pyotp.TOTP(secret).now() or pyotp.TOTP(secret).verify(otp, time.time() - 30):
 			return "<pre>✅ TRUE ✅</pre>"
 		else:
 			return "<pre>❌ FALSE ❌</pre>"
